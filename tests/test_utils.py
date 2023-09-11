@@ -1,12 +1,11 @@
 import pytest
-import json
 from operations.utils import (read_operations, sort_history, encode_in_account,
                               encode_out_account, print_operation)
-data = "operations/operations.json"
+file = "operations/operations.json"
 
 
 def test_read_operations():
-    operations = read_operations(data)
+    operations = read_operations(file)
     assert type(operations) == list
 
 
