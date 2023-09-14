@@ -1,21 +1,32 @@
+import os
 import json
+from datetime import datetime
 
 
-def read_operations(filename) -> list:
+def read_operations() -> list:
     """
-    Reads file with operations history and returns last five ones of them
+    Reads file with operations history and returns list of them
     """
-    with open(filename, 'r', encoding='utf-8') as data:
+    current_file = os.path.realpath("operations.json")
+    with open(current_file, 'r', encoding='utf-8') as data:
         operations = json.loads(data.read())
     return operations
 
 
-def sort_history(operations: list, operations_amount: int) -> list:
+def filter_operations(operations):
+    """
+    Filters operations having status 'EXECUTED'
+    """
+    last_operations = [op for op in operations if 'state' in op and op['state'] == 'EXECUTED']
+    return last_operations
+
+
+def get_last_operations(operations: list, operations_amount: int) -> list:
     """
     Sorts list of operations by date and status 'EXECUTED' and returns list of needed amount operations
     """
-    sorted_operations = sorted(operations, key=lambda x: (x.get('state', 'unknown'), x.get('date')), reverse=True)
-    last_operations = [op for op in sorted_operations[:operations_amount * 2] if op][:operations_amount]
+    sorted_operations = sorted(operations, key=lambda x: x['date'], reverse=True)
+    last_operations = sorted_operations[:operations_amount]
     return last_operations
 
 
@@ -23,7 +34,9 @@ def encode_in_account(operation: dict) -> str:
     """
     Encodes source account number into a required format
     """
-    account_in, acc_in_num = operation['to'].split()
+    account_params = operation['to'].split()
+    account_in = ' '.join(account_params[:-1])
+    acc_in_num = account_params[-1]
     return f'{account_in} **{acc_in_num[-4:]}'
 
 
@@ -44,7 +57,7 @@ def print_operation(operation: dict) -> str:
     """
     Returns operation information according to output required format
     """
-    oper_date = '.'.join(operation['date'][:operation['date'].index('T')].split('-')[::-1])
+    oper_date = datetime.strptime(operation['date'], '%Y-%m-%dT%H:%M:%S.%f').strftime('%d.%m.%Y')
     description = operation['description']
     amount = operation['operationAmount']['amount']
     currency = operation['operationAmount']['currency']['name']
