@@ -2,9 +2,9 @@ from operations.utils import (read_operations, filter_operations, get_last_opera
                    encode_in_account, encode_out_account, print_operation)
 
 
-# def test_read_operations():
-#     operations = read_operations()
-#     assert type(operations) == list
+def test_read_operations():
+    operations = read_operations()
+    assert type(operations) == list
 
 
 def test_filter_operations():
