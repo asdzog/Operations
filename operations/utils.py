@@ -4,11 +4,10 @@ from datetime import datetime
 
 
 def read_operations() -> list:
-    """
-    Reads file with operations history and returns list of them
-    """
-    current_file = os.path.realpath("operations.json")
-    with open(current_file, 'r', encoding='utf-8') as data:
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    operations_file_path = os.path.join(current_dir, "operations.json")
+
+    with open(operations_file_path, 'r', encoding='utf-8') as data:
         operations = json.loads(data.read())
     return operations
 
